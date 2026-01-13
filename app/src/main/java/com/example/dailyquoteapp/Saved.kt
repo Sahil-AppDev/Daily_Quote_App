@@ -28,6 +28,8 @@ private lateinit var binding: ActivitySavedBinding
         binding.rvFavorites.adapter = FavoritesAdapter(list)
 
         binding.tvCount.text = "${list.size} Quotes Saved"
+        binding.backBtn.setOnClickListener {
+finish()        }
 
 
     }

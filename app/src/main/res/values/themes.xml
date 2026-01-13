@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.DailyQuoteApp" parent="android:Theme.Material.Light.NoActionBar" />
-  <!-- Base application theme. -->
+    <!-- Base application theme. -->
     <style name="Base.Theme.DailyQuoteApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->

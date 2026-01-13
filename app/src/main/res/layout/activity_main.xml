@@ -1,116 +1,75 @@
-<layout>
-    <data></data>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F7F4ED"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    <data />
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DAILY REFLECTION"
-        android:textAllCaps="true"
-        android:textColor="#000000"
-        android:letterSpacing="0.15"
-        android:textSize="12sp" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="48dp" />
-
-    <!-- Quote -->
-    <TextView
-        android:id="@+id/tvQuote"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="The only journey is the one within."
-        android:textColor="#000000"
-        android:textSize="26sp"
-        android:fontFamily="serif"
-        android:textStyle="italic"
-        android:gravity="center" />
+        android:layout_height="match_parent"
+        android:background="#F7F4ED"
+        android:padding="12dp">
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="16dp" />
 
-    <!-- Author -->
-    <TextView
-        android:id="@+id/tvAuthor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="— Rainer Maria Rilke"
-        android:textColor="#666666"
-        android:textSize="12sp" />
-
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="64dp" />
-
-    <!-- Buttons container -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <!-- Favorite -->
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <!-- Search View -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginEnd="32dp">
+            android:layout_marginTop="30dp"
+            android:queryHint="Search quotes or authors"
+            android:iconifiedByDefault="false"
+            android:background="@drawable/bg_search"
+          app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+        <HorizontalScrollView
+            android:id="@+id/hs_category"
+            app:layout_constraintTop_toBottomOf="@id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
 
-            <ImageView
-                android:id="@+id/btnFavorite"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_circle_white"
-                android:src="@drawable/ic_heart"
-                android:padding="18dp" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/categoryContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FAVORITE"
-                android:textSize="10sp"
-                android:textColor="#000000"
-                android:layout_marginTop="6dp" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:padding="12dp"/>
+        </HorizontalScrollView>
 
-        <!-- Share -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+        <!-- Swipe Refresh -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/hs_category"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/btnShare"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_circle_white"
-                android:src="@drawable/ic_share"
-                android:padding="18dp"
-                />
+            <!-- RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SHARE"
-                android:textSize="10sp"
-                android:textColor="#000000"
-                android:layout_marginTop="6dp" />
-        </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </LinearLayout>
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

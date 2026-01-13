@@ -2,87 +2,142 @@ package com.example.dailyquoteapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.dailyquoteapp.api.ApiClient
-import com.example.dailyquoteapp.data.FavoriteManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dailyquoteapp.adapter.QuoteAdapter
 import com.example.dailyquoteapp.data.Quote
+import com.example.dailyquoteapp.data.QuoteCategory
 import com.example.dailyquoteapp.databinding.ActivityMainBinding
+import com.example.dailyquoteapp.repository.QuoteRepository
+import com.example.dailyquoteapp.ui.auth.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private val repo = QuoteRepository()
+    private var allQuotes: List<Quote> = emptyList()
+    private var selectedCategory: String? = null
 
 
-class MainActivity : ComponentActivity() {
-    private lateinit var binding:ActivityMainBinding
-    private var currentQuote: Quote? = null
 
+
+    private val adapter = QuoteAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        lifecycleScope.launch {
-            try {
-                Log.d("API_CALL", "Starting quote fetch")
 
-                val response = ApiClient.api.getRandomQuote()[0]
+        setupRecyclerView()
+        setupCategories()
+        loadQuotes()
+        setupSearch()
 
-                binding.tvQuote.text = "“${response.quote}”"
-                binding.tvAuthor.text = "— ${response.author}"
-
-                currentQuote = Quote(
-                    id = response.quote.hashCode().toString(),
-                    content = response.quote,
-                    author = response.author
-                )
-
-
-                binding.btnFavorite.isEnabled = true
-                binding.btnShare.isEnabled = true
-
-            } catch (e: Exception) {
-
-
-                binding.tvQuote.text = "Failed to load quote"
-                Toast.makeText(
-                    this@MainActivity,
-                    "Network error: ${e.localizedMessage}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        binding.swipeRefresh.setOnRefreshListener {
+            loadQuotes()
         }
-
-
-        binding.btnFavorite.setOnClickListener {
-            currentQuote?.let {
-                FavoriteManager.save(this, it)
-                Toast.makeText(this, "Added to favorites", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, Saved::class.java)
-                startActivity(intent)
-            }
-        }
-
-        binding.btnShare.setOnClickListener {
-            currentQuote?.let {
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "“${it.content}” — ${it.author}"
-                    )
-                }
-                startActivity(Intent.createChooser(intent, "Share Quote"))
-            }
-        }
-
-
-
-
+//        binding.logout.setOnClickListener {
+//            FirebaseAuth.getInstance().signOut()
+//            startActivity(Intent(this, LoginActivity::class.java))
+//            finish()
+//
+//
 
 
     }
+
+    private fun setupRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
+    }
+
+    private fun loadQuotes() {
+        lifecycleScope.launch {
+            try {
+                binding.progressBar.visibility = View.VISIBLE
+                allQuotes = repo.getQuotes()
+                applyFilters()
+            } catch (e: Exception) {
+                Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+            } finally {
+                binding.progressBar.visibility = View.GONE
+                binding.swipeRefresh.isRefreshing = false
+            }
+        }
+    }
+    private fun applyFilters() {
+        val query = binding.searchView.query.toString()
+
+        val filtered = allQuotes.filter { quote ->
+
+            val matchesCategory =
+                selectedCategory == null ||
+                        quote.category == selectedCategory
+
+            val matchesSearch =
+                quote.content.contains(query, true) ||
+                        quote.author.contains(query, true)
+
+            matchesCategory && matchesSearch
+        }
+
+        adapter.submit(filtered)
+    }
+
+
+
+
+
+
+    override fun onStart() {
+        super.onStart()
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+    }
+    private fun setupCategories() {
+        QuoteCategory.values().forEach { category ->
+
+            val chip = layoutInflater.inflate(
+                R.layout.item_category,
+                binding.categoryContainer,
+                false
+            ) as TextView
+
+            chip.text = category.displayName
+
+            chip.setOnClickListener {
+                selectedCategory = category.displayName
+                applyFilters()
+            }
+
+
+            binding.categoryContainer.addView(chip)
+        }
+    }
+
+
+    private fun setupSearch() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                applyFilters()
+                return true
+            }
+        })
+    }
+
+
 }
-
-

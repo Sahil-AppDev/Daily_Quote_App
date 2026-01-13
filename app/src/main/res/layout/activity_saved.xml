@@ -4,19 +4,35 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="16dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/back_arrow"
+            android:padding="10dp"
+            />
+        <TextView
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Favorites"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="8dp" />
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Favorites"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:fontFamily="sans-serif-black"
+            android:textStyle="bold"
+            android:padding="8dp" />
+    </RelativeLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavorites"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1" />
 
     <TextView
