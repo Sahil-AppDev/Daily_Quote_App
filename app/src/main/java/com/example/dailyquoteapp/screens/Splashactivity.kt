@@ -1,4 +1,4 @@
-package com.example.dailyquoteapp
+package com.example.dailyquoteapp.screens
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dailyquoteapp.databinding.ActivitySplashactivityBinding
-import com.example.dailyquoteapp.ui.auth.LoginActivity
+import com.example.dailyquoteapp.auth.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class Splashactivity : AppCompatActivity() {

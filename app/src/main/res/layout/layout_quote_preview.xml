@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Quote Card Preview -->
+    <FrameLayout
+        android:id="@+id/cardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:padding="20dp"
+        android:background="@drawable/bg_quote_gradient">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvPreviewQuote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quote goes here"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:lineSpacingExtra="4dp"/>
+
+            <TextView
+                android:id="@+id/tvPreviewAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="— Author"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Actions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnSaveImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Image 📥"/>
+
+        <Button
+            android:id="@+id/btnShareImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share Image 🚀"
+            android:layout_marginStart="16dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ImageView
+
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dailyquoteapp.R
@@ -12,6 +14,8 @@ import com.example.dailyquoteapp.databinding.ItemQuoteBinding
 class QuoteAdapter : RecyclerView.Adapter<QuoteAdapter.QuoteViewHolder>() {
 
     private val quotes = mutableListOf<Quote>()
+    var onFavoriteClick: ((Quote) -> Unit)? = null
+    var onShareClick: ((Quote) -> Unit)? = null
 
     fun submitList(list: List<Quote>) {
         quotes.clear()
@@ -29,7 +33,20 @@ class QuoteAdapter : RecyclerView.Adapter<QuoteAdapter.QuoteViewHolder>() {
         val quote = quotes[position]
         holder.bind(quote)
 
-        // 🎨 Rotate background colors
+        holder.ivFavorite.setImageResource(
+            if (quote.isFavorite)
+                R.drawable.heart_filled
+            else
+                R.drawable.heart_outline
+        )
+
+        holder.ivFavorite.setOnClickListener {
+            onFavoriteClick?.invoke(quote)
+        }
+        holder.ivShare.setOnClickListener {
+            onShareClick?.invoke(quote)
+        }
+
         val backgrounds = listOf(
             R.drawable.bg_quote_blue,
             R.drawable.bg_quote_green,
@@ -44,11 +61,14 @@ class QuoteAdapter : RecyclerView.Adapter<QuoteAdapter.QuoteViewHolder>() {
             )
     }
 
-    override fun getItemCount(): Int = quotes.size
+    override fun getItemCount() = quotes.size
 
     class QuoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvQuote = itemView.findViewById<TextView>(R.id.tvQuote)
-        private val tvAuthor = itemView.findViewById<TextView>(R.id.tvAuthor)
+
+        val tvQuote: TextView = itemView.findViewById(R.id.tvQuote)
+        val tvAuthor: TextView = itemView.findViewById(R.id.tvAuthor)
+        val ivFavorite: ImageView = itemView.findViewById(R.id.ivFavorite)
+        val ivShare: ImageView = itemView.findViewById(R.id.ivShare)
 
         fun bind(quote: Quote) {
             tvQuote.text = quote.content

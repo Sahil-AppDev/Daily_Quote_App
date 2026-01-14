@@ -47,6 +47,18 @@ android:layout_width="wrap_content"            />
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="24dp"/>
 
+        <Button
+            app:layout_constraintTop_toBottomOf="@id/tvEmail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_goneMarginTop="25dp"
+            android:id="@+id/btnSetQuoteTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Daily Quote Time ⏰"
+            android:layout_marginTop="8dp"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

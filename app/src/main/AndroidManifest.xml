@@ -4,10 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
 
     <application
         android:allowBackup="true"
+        android:name=".App"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -17,19 +19,19 @@
         android:theme="@style/Theme.DailyQuoteApp"
         tools:targetApi="31">
         <activity
-            android:name=".ProfileActivity"
+            android:name=".screens.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.SignupActivity"
+            android:name=".auth.SignupActivity"
             android:exported="false"
             tools:ignore="MissingClass" />
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".auth.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.DailyQuoteApp"
             tools:ignore="MissingClass" />
         <activity
-            android:name=".Splashactivity"
+            android:name=".screens.Splashactivity"
             android:exported="true"
             android:theme="@style/Theme.DailyQuoteApp">
             <intent-filter>
@@ -39,11 +41,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Saved"
+            android:name=".screens.Favorites"
             android:exported="false"
             android:theme="@style/Theme.DailyQuoteApp" />
         <activity
-            android:name=".MainActivity"
+            android:name=".screens.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DailyQuoteApp" />
@@ -51,6 +53,19 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+
+
+        </provider>
+
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:cardCornerRadius="16dp"
+
         app:cardElevation="2dp">
 
         <LinearLayout
@@ -30,6 +31,28 @@
                 android:textSize="12sp"
                 android:textColor="#666666"
                 android:layout_marginTop="8dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/ivFavorite"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="12dp"
+                    app:tint="#E53935"
+                    android:src="@drawable/ic_heart"
+                    android:layout_alignParentStart="true"/>
+
+                <ImageView
+                    android:id="@+id/ivShare"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_share"
+                    android:padding="4dp"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 

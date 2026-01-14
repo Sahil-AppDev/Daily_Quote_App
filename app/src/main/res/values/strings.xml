@@ -42,4 +42,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="search_quotes_or_authors">Search quotes or authors</string>
+    <string name="quote_of_the_day">🌟 Quote of the Day</string>
+    <string name="no_quotes_found">No quotes found</string>
+    <string name="_0_quotes_saved">0 Quotes Saved</string>
 </resources>
