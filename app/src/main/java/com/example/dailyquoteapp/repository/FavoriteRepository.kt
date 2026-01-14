@@ -15,17 +15,17 @@ class FavoriteRepository {
     fun saveFavorite(quote: Quote) {
         val userId = auth.currentUser?.uid ?: return
 
-        db.collection("favorites")
-            .document("${userId}_${quote.id}")
-            .set(
-                mapOf(
-                    "userId" to userId,
-                    "quoteId" to quote.id,
-                    "content" to quote.content,
-                    "author" to quote.author,
-                    "category" to quote.category,
-                    "createdAt" to FieldValue.serverTimestamp()
-                )
-            )
+//        db.collection("favorites")
+//            .document("${userId}_${quote.id}")
+//            .set(
+//                mapOf(
+//                    "userId" to userId,
+//                    "quoteId" to quote.id,
+//                    "content" to quote.content,
+//                    "author" to quote.author,
+//                    "category" to quote.category,
+//                    "createdAt" to FieldValue.serverTimestamp()
+//                )
+//            )
     }
 }

@@ -8,136 +8,121 @@ import androidx.appcompat.widget.SearchView
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.dailyquoteapp.adapter.QuoteAdapter
+import com.example.dailyquoteapp.api.ApiClient
 import com.example.dailyquoteapp.data.Quote
 import com.example.dailyquoteapp.data.QuoteCategory
 import com.example.dailyquoteapp.databinding.ActivityMainBinding
 import com.example.dailyquoteapp.repository.QuoteRepository
 import com.example.dailyquoteapp.ui.auth.LoginActivity
+import com.example.dailyquoteapp.viewModel.QuoteViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private val repo = QuoteRepository()
-    private var allQuotes: List<Quote> = emptyList()
-    private var selectedCategory: String? = null
-
-
-
-
-    private val adapter = QuoteAdapter()
+    private lateinit var viewModel: QuoteViewModel
+    private lateinit var adapter: QuoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupRecyclerView()
-        setupCategories()
-        loadQuotes()
-        setupSearch()
-
-        binding.swipeRefresh.setOnRefreshListener {
-            loadQuotes()
-        }
-//        binding.logout.setOnClickListener {
-//            FirebaseAuth.getInstance().signOut()
-//            startActivity(Intent(this, LoginActivity::class.java))
-//            finish()
-//
-//
+        setContentView(R.layout.activity_main)
+        val chipGroup = findViewById<ChipGroup>(R.id.chipGroupCategory)
 
 
-    }
+        adapter = QuoteAdapter()
+        viewModel = ViewModelProvider(this)[QuoteViewModel::class.java]
 
-    private fun setupRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
-    }
+        val recyclerView = findViewById<RecyclerView>(R.id.rvQuotes)
+        val searchView = findViewById<SearchView>(R.id.searchView)
 
-    private fun loadQuotes() {
-        lifecycleScope.launch {
-            try {
-                binding.progressBar.visibility = View.VISIBLE
-                allQuotes = repo.getQuotes()
-                applyFilters()
-            } catch (e: Exception) {
-                Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
-            } finally {
-                binding.progressBar.visibility = View.GONE
-                binding.swipeRefresh.isRefreshing = false
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        val emptyState = findViewById<TextView>(R.id.tvEmptyState)
+
+        viewModel.quotes.observe(this) { list ->
+            val safeList = list.filterNotNull()
+
+            adapter.submitList(safeList)
+
+            if (safeList.isEmpty()) {
+                emptyState.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                emptyState.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
             }
         }
-    }
-    private fun applyFilters() {
-        val query = binding.searchView.query.toString()
 
-        val filtered = allQuotes.filter { quote ->
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
-            val matchesCategory =
-                selectedCategory == null ||
-                        quote.category == selectedCategory
+// Default selected
+        bottomNav.selectedItemId = R.id.menu_home
 
-            val matchesSearch =
-                quote.content.contains(query, true) ||
-                        quote.author.contains(query, true)
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_home -> {
+                    // Already on Home
+                    true
+                }
 
-            matchesCategory && matchesSearch
-        }
+                R.id.menu_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    false
+                }
 
-        adapter.submit(filtered)
-    }
-
-
-
-
-
-
-    override fun onStart() {
-        super.onStart()
-        if (FirebaseAuth.getInstance().currentUser == null) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
-    }
-    private fun setupCategories() {
-        QuoteCategory.values().forEach { category ->
-
-            val chip = layoutInflater.inflate(
-                R.layout.item_category,
-                binding.categoryContainer,
-                false
-            ) as TextView
-
-            chip.text = category.displayName
-
-            chip.setOnClickListener {
-                selectedCategory = category.displayName
-                applyFilters()
+                else -> false
             }
-
-
-            binding.categoryContainer.addView(chip)
         }
-    }
+        val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
+
+        swipeRefresh.setOnRefreshListener {
+            viewModel.loadInitialQuotes()
+            swipeRefresh.isRefreshing = false
+        }
+
+        chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (checkedIds.isNotEmpty()) {
+                val chip = group.findViewById<Chip>(checkedIds[0])
+                viewModel.setCategory(chip.text.toString())
+            }
+        }
 
 
-    private fun setupSearch() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        // Initial load
+        viewModel.loadInitialQuotes()
 
-            override fun onQueryTextSubmit(query: String?): Boolean = false
+        // Fake pagination trigger
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                if (!rv.canScrollVertically(1)) {
+                    viewModel.loadNextPage()
+                }
+            }
+        })
 
+        // 🔍 SEARCH LISTENER
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                applyFilters()
+                viewModel.search(newText.orEmpty())
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.search(query.orEmpty())
                 return true
             }
         })
+
+
     }
-
-
 }

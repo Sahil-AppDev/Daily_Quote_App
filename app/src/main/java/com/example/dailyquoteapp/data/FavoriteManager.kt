@@ -18,10 +18,10 @@ object FavoriteManager {
             type
         )
 
-        if (list.none { it.id == quote.id }) {
-            list.add(quote)
-            prefs.edit().putString(KEY_FAVORITES, gson.toJson(list)).apply()
-        }
+//        if (list.none { it.id == quote.id }) {
+//            list.add(quote)
+//            prefs.edit().putString(KEY_FAVORITES, gson.toJson(list)).apply()
+//        }
     }
 
     fun getAll(context: Context): List<Quote> {

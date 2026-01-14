@@ -1,9 +1,13 @@
 package com.example.dailyquoteapp.api
 
+import com.example.dailyquoteapp.data.Quote
+import com.example.dailyquoteapp.data.QuoteDto
 import com.google.gson.annotations.SerializedName
 data class QuoteResponse(
-    @SerializedName("q") val quote: String,
-    @SerializedName("a") val author: String
+    val page: Int,
+    val totalPages: Int,
+    val results: List<QuoteDto>
 )
+
 
 
