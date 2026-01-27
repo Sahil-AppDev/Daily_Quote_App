@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         val chipGroup = findViewById<ChipGroup>(R.id.chipGroupCategory)
         NotificationUtils.createChannel(this)
 
+        AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_NO
+        )
 
         adapter = QuoteAdapter()
         viewModel = ViewModelProvider(this)[QuoteViewModel::class.java]
@@ -90,10 +94,6 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
 
-                R.id.menu_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    false
-                }
 
                 else -> false
             }

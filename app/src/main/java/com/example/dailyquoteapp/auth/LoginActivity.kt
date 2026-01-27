@@ -38,11 +38,12 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 🔄 SHOW LOADER
+            // 🔥 SHOW LOADER
             binding.progressBar.visibility = View.VISIBLE
             binding.btnLogin.isEnabled = false
 
-            auth.signInWithEmailAndPassword(email, password)
+            FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
@@ -51,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
                 }
                 .addOnCompleteListener {
-                    // 🔄 HIDE LOADER
+                    // 🔥 HIDE LOADER (success or failure)
                     binding.progressBar.visibility = View.GONE
                     binding.btnLogin.isEnabled = true
                 }

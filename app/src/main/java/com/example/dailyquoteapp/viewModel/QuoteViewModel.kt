@@ -1,10 +1,12 @@
 package com.example.dailyquoteapp.viewModel
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -88,6 +90,7 @@ class QuoteViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun loadQuoteOfTheDay() {
         val prefs = App.context.getSharedPreferences("quote_of_day", Context.MODE_PRIVATE)
 
